@@ -4,6 +4,7 @@ import UserPage from '../../pages/UserPage';
 import UserDetailPage from '../../pages/UserDetailPage';
 import UserAddPage from '../../pages/UserAddPage';
 import UserUpdatePage from '../../pages/UserUpdatePage';
+import UserLogin from '../../pages/UserLogin';
 // import DetailUserPage from '../../pages/DetailUserPage';
 
 export const userRoute: RouteObject[] = [
@@ -12,3 +13,8 @@ export const userRoute: RouteObject[] = [
   { path: "/user/add", element: <UserAddPage /> },  
   { path: "/user/:userId/edit", element: <UserUpdatePage /> },
 ];
+
+export const authRoute: RouteObject[] = [
+  { path: "/auth/login", element: <UserLogin /> },
+  
+]

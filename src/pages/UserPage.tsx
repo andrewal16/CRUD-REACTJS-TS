@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/Store";
-import { fetchAllUser, deleteUserById } from "../reducer/UserSlice";
-
+import { fetchAllUser, deleteUserById, refetchUsers} from "../reducer/UserSlice";
+import Swal from "sweetalert2";
 const UserPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { userData, isLoading, isError, errorMessage } = useSelector(
@@ -21,17 +21,32 @@ const UserPage: React.FC = () => {
     navigate(`/users/${userId}`);
   };
 
+
   const handleDeleteClick = async (userId: string) => {
-    setDeletingUser(userId);
-    setDeleteError(null);
-    try {
-      await dispatch(deleteUserById(userId)).unwrap();
-    } catch (error) {
-      console.error("Failed to delete user:", error);
-      setDeleteError("Failed to delete user. Please try again.");
-    } finally {
-      setDeletingUser(null);
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor:   
+   '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setDeletingUser(userId);
+        setDeleteError(null);
+        try {
+          await dispatch(deleteUserById(userId)).unwrap();
+          dispatch(refetchUsers());
+        } catch (error) {
+          console.error("Failed to delete user:", error);
+          setDeleteError("Failed to delete user. Please try again.");
+        } finally {
+          setDeletingUser(null);
+        }
+      }
+    });
   };
 
   if (isLoading && userData.length === 0) {

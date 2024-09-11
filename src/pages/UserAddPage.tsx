@@ -3,29 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/Store';
 import { addUser } from '../reducer/UserSlice';
+import Swal from 'sweetalert2';
+
 
 const UserAddPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+
   const { isLoading, isError } = useSelector((state: RootState) => state.user);
 
-  const [name, setName] = useState('');
-  const [job, setJob] = useState('');
+  const [form, setForm] = useState({
+    name: '',
+    job: '',
+  })
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!name.trim() || !job.trim()) {
+    if (!form.name.trim() || !form.job.trim()) {
       setError('Please fill in both name and job fields.');
       return;
     }
 
     try {
-      await dispatch(addUser({ Name: name.trim(), Job: job.trim() })).unwrap();
-      navigate('/user');
+      await dispatch(addUser({ Name: form.name.trim(), Job: form.job.trim() })).unwrap();
+      Swal.fire({
+        title: 'Success!',
+        text: 'Successfully added user.',
+        icon: 'success',
+        confirmButtonText: 'Cool'
+      }).then(() => {
+        navigate('/user');
+      })
+      
     } catch (error) {
       console.error('Failed to add user:', error);
       setError('Failed to add user. Please try again.');
@@ -46,8 +59,8 @@ const UserAddPage: React.FC = () => {
             id="name"
             className="input input-bordered w-full"
             placeholder="Enter name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={form.name}
+            onChange={(e) => setForm({...form, name: e.target.value})}
             required
           />
         </div>
@@ -60,8 +73,8 @@ const UserAddPage: React.FC = () => {
             id="job"
             className="input input-bordered w-full"
             placeholder="Enter job"
-            value={job}
-            onChange={(e) => setJob(e.target.value)}
+            value={form.job}
+            onChange={(e) => setForm({...form, job: e.target.value})}
             required
           />
         </div>

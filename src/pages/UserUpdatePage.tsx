@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/Store';
 import { fetchUserById, updateUser, clearSelectedUser } from '../reducer/UserSlice';
-
+import Swal from 'sweetalert2';
 const UserUpdatePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const dispatch = useDispatch<AppDispatch>();
@@ -31,14 +31,28 @@ const UserUpdatePage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedUser) {
-      try {
-        await dispatch(updateUser({ ...selectedUser, Name: name, Job: job })).unwrap();
-        navigate('/user');
-      } catch (error) {
-        console.error('Failed to update user:', error);
+  
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Save Changes!'
+    })
+    .then(async (result) => { 
+      if (result.isConfirmed) {
+        if (selectedUser) {
+          try {
+            await dispatch(updateUser({ ...selectedUser, Name: name, Job: job })).unwrap();
+            navigate('/user');
+          } catch (error) {
+            console.error('Failed to update user:', error);
+          }
+        }
       }
-    }
+    });
   };
 
   if (isLoading) return <div>Loading...</div>;

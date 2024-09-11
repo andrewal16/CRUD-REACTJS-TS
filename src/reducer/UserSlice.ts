@@ -3,7 +3,7 @@ import { User } from "../model/UserModel";
 import axios from "axios";
 
 const baseURL = "https://crudcrud.com/api/";
-const key = "89340c1cdb95470ba48b9b93f43d34d6";
+const key = "9e762b4a7b5a44f6a3cd4de489afe617";
 
 export const fetchAllUser = createAsyncThunk(
   "user/fetchAllUser",
@@ -86,6 +86,19 @@ export const fetchUserById = createAsyncThunk(
     } catch (error) {
       console.error("Error fetching user:", error);
       return rejectWithValue("Failed to fetch user. Please try again.");
+    }
+  }
+);
+
+export const refetchUsers = createAsyncThunk(
+  "user/refetchUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${baseURL}${key}/users`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      return rejectWithValue("Failed to fetch users. Please try again.");
     }
   }
 );
