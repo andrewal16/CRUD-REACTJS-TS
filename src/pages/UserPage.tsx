@@ -26,7 +26,6 @@ const UserPage: React.FC = () => {
     setDeleteError(null);
     try {
       await dispatch(deleteUserById(userId)).unwrap();
-      // No need to refetch all users here, as the state is updated in the slice
     } catch (error) {
       console.error("Failed to delete user:", error);
       setDeleteError("Failed to delete user. Please try again.");

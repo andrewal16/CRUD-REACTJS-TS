@@ -168,7 +168,6 @@ const UserSlice = createSlice({
         state.isError = false;
         state.errorMessage = null;
       })
-      // ... (keep other cases as they are)
       .addCase(addUser.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
@@ -176,8 +175,7 @@ const UserSlice = createSlice({
       })
       .addCase(addUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        // We don't need to push the new user here anymore
-        // because we're refetching all users in the thunk
+
       })
       .addCase(addUser.rejected, (state, action) => {
         state.isLoading = false;
